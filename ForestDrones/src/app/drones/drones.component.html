@@ -1,0 +1,19 @@
+<h1>Drones</h1>
+
+<div>
+  <table>
+    <tbody>
+      <th>Drone ID</th>
+      <th>Is Active</th>
+      <th>Position</th>
+      <th>Toggle Activeness</th>
+    </tbody>
+    <tr *ngFor="let drone of dronesData">
+      <td>{{drone.id}}</td>
+      <td>{{drone.isActive}}</td>
+      <td>X: {{drone.position?.x}} Y: {{drone.position?.y}}</td>
+      <td *ngIf="!drone.isActive"><button (click)="activateDroneById(drone.id)">Activate</button></td>
+      <td *ngIf="drone.isActive"><button (click)="shutdownDroneById(drone.id)">Deactivate</button></td>
+    </tr>
+  </table>
+</div>
