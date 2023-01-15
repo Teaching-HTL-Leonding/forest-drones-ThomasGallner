@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { DronesDataService, TreeScanRoot } from '../drones-data.service';
+import {
+  DronesDataService,
+  Position,
+  TreeScanRoot,
+} from '../drones-data.service';
 
 @Component({
   selector: 'app-manage-drones',
@@ -14,8 +18,11 @@ export class ManageDronesComponent implements OnInit {
   public selectedScanDroneId: number;
   public currX: number;
   public currY: number;
-  public treeX: number;
-  public treeY: number;
+  public inputTreeX: number;
+  public inputTreeY: number;
+
+  public nearestDamagedTreePos?: Position;
+  public distToNearestDamagedTree?: Position;
 
   constructor(public droneService: DronesDataService) {
     this.activeDronesIds = [];
@@ -23,8 +30,8 @@ export class ManageDronesComponent implements OnInit {
     this.selectedScanDroneId = 0;
     this.currX = 0;
     this.currY = 0;
-    this.treeX = 0;
-    this.treeY = 0;
+    this.inputTreeX = 0;
+    this.inputTreeY = 0;
   }
 
   ngOnInit(): void {
@@ -34,7 +41,11 @@ export class ManageDronesComponent implements OnInit {
   public scanAroundDrone(id: number) {
     this.droneService
       .scanAroundDrone(id)
-      .subscribe((data) => (this.damagedTreesData = data));
+      .subscribe(data => {
+        this.damagedTreesData = data;
+
+        this.nearestDamagedTreePos = this.getLocationOfNearestDamagedTree();
+      });
   }
 
   public flyDroneTo(id: number, x: number, y: number) {
@@ -51,7 +62,42 @@ export class ManageDronesComponent implements OnInit {
     });
   }
 
-  public markTreeAsExamined(x: number, y: number){
+  public markTreeAsExamined(x: number, y: number) {
     this.droneService.markTreeAsExamined(x, y).subscribe();
+  }
+
+  public getLocationOfNearestDamagedTree(): Position {
+    let treeX = 0;
+    let treeY = 0;
+    let minDistance = Number.MAX_SAFE_INTEGER;
+    let manhattanDistance = 0;
+
+    for (let tree of this.damagedTreesData?.damagedTrees!) {
+      manhattanDistance = this.getManhattanDistanceToTree(tree.x, tree.y);
+      if (manhattanDistance < minDistance) {
+        minDistance = manhattanDistance;
+
+        treeX = tree.x;
+        treeY = tree.y;
+      }
+    }
+
+    this.distToNearestDamagedTree = this.getDistanceToTree(treeX, treeY);
+    this.distToNearestDamagedTree.x *= -1;
+    this.distToNearestDamagedTree.y *= -1;
+    return { x: treeX, y: treeY };
+  }
+
+  public getDistanceToTree(treeX: number, treeY: number): Position {
+    let xDiff = this.currX - treeX;
+    let yDiff = this.currY - treeY;
+
+    return { x: xDiff, y: yDiff };
+  }
+
+  private getManhattanDistanceToTree(treeX: number, treeY: number): number {
+    let temp = this.getDistanceToTree(treeX, treeY);
+
+    return Math.abs(temp.x) + Math.abs(temp.y);
   }
 }

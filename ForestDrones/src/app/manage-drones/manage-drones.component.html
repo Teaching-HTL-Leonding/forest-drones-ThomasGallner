@@ -1,13 +1,5 @@
 <div>
-  <h2>Fly Drone</h2>
-
-  <label>Drone:
-    <select [(ngModel)]="selectedFlyDroneId">
-      <option *ngFor="let droneId of activeDronesIds" [value]="droneId">{{droneId}}</option>
-    </select>
-  </label>
-
-  <br>
+  <h2>My current position</h2>
 
   <label>X:
     <input type="number" [(ngModel)]="currX">
@@ -18,10 +10,20 @@
   <label>Y:
     <input type="number" [(ngModel)]="currY">
   </label>
+</div>
+
+<div>
+  <h2>Fly Drone</h2>
+
+    <label>Drone:
+    <select [(ngModel)]="selectedFlyDroneId">
+      <option *ngFor="let droneId of activeDronesIds" [value]="droneId">{{droneId}}</option>
+    </select>
+  </label>
 
   <br>
 
-  <button (click)="flyDroneTo(selectedFlyDroneId, currX, currY)">Fly to location</button>
+  <button (click)="flyDroneTo(selectedFlyDroneId, currX, currY)">Fly to my location</button>
 </div>
 
 <div>
@@ -36,36 +38,28 @@
   <br>
 
   <button (click)="scanAroundDrone(selectedScanDroneId)">Scan around drone</button>
+
+  <div *ngIf="nearestDamagedTreePos && distToNearestDamagedTree">
+    <p>The nearest damaged tree is at X: {{nearestDamagedTreePos.x}} and Y: {{nearestDamagedTreePos.y}}.</p>
+    <p>You have to move {{distToNearestDamagedTree.x}} meters on the X axis and {{distToNearestDamagedTree.y}} meters on the Y axis.</p>
+  </div>
 </div>
 
-<div>
-  <table *ngIf="damagedTreesData">
-    <tbody>
-      <th>Tree X</th>
-      <th>Tree Y</th>
-
-      <tr *ngFor="let tree of damagedTreesData?.damagedTrees">
-        <td>{{tree.x}}</td>
-        <td>{{tree.y}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
 
 <div>
   <h2>Mark tree as examined</h2>
 
   <label>X:
-    <input type="number" [(ngModel)]="treeX">
+    <input type="number" [(ngModel)]="inputTreeX">
   </label>
 
   <br>
 
   <label>Y:
-    <input type="number" [(ngModel)]="treeY">
+    <input type="number" [(ngModel)]="inputTreeY">
   </label>
 
   <br>
 
-  <button (click)="markTreeAsExamined(treeX, treeY)">Mark tree as examined</button>
+  <button (click)="markTreeAsExamined(inputTreeX, inputTreeY)">Mark tree as examined</button>
 </div>
