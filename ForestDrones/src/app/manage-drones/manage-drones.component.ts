@@ -14,8 +14,7 @@ export class ManageDronesComponent implements OnInit {
   public activeDronesIds: number[];
 
   public damagedTreesData?: TreeScanRoot;
-  public selectedFlyDroneId: number;
-  public selectedScanDroneId: number;
+  public selectedDroneId: number;
   public currX: number;
   public currY: number;
   public inputTreeX: number;
@@ -26,8 +25,8 @@ export class ManageDronesComponent implements OnInit {
 
   constructor(public droneService: DronesDataService) {
     this.activeDronesIds = [];
-    this.selectedFlyDroneId = 0;
-    this.selectedScanDroneId = 0;
+    this.selectedDroneId = 0;
+    this.selectedDroneId = 0;
     this.currX = 0;
     this.currY = 0;
     this.inputTreeX = 0;
@@ -39,13 +38,14 @@ export class ManageDronesComponent implements OnInit {
   }
 
   public scanAroundDrone(id: number) {
-    this.droneService
-      .scanAroundDrone(id)
-      .subscribe(data => {
-        this.damagedTreesData = data;
+    this.droneService.scanAroundDrone(id).subscribe((data) => {
+      this.damagedTreesData = data;
 
-        this.nearestDamagedTreePos = this.getLocationOfNearestDamagedTree();
-      });
+      this.nearestDamagedTreePos = this.getLocationOfNearestDamagedTree();
+
+      console.log(this.nearestDamagedTreePos);
+      console.log(this.distToNearestDamagedTree);
+    });
   }
 
   public flyDroneTo(id: number, x: number, y: number) {
@@ -99,5 +99,11 @@ export class ManageDronesComponent implements OnInit {
     let temp = this.getDistanceToTree(treeX, treeY);
 
     return Math.abs(temp.x) + Math.abs(temp.y);
+  }
+
+  public flyDroneToCurrLocAndScanForDamagedTree() {
+    this.droneService
+      .flyDroneTo(this.selectedDroneId, this.currX, this.currY)
+      .subscribe(() => this.scanAroundDrone(this.selectedDroneId));
   }
 }

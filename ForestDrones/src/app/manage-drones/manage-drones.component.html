@@ -12,32 +12,19 @@
   </label>
 </div>
 
-<div>
-  <h2>Fly Drone</h2>
-
-    <label>Drone:
-    <select [(ngModel)]="selectedFlyDroneId">
-      <option *ngFor="let droneId of activeDronesIds" [value]="droneId">{{droneId}}</option>
-    </select>
-  </label>
-
-  <br>
-
-  <button (click)="flyDroneTo(selectedFlyDroneId, currX, currY)">Fly to my location</button>
-</div>
 
 <div>
-  <h2>Scan Area around Drone for damaged Trees:</h2>
+  <h2>Fly Drone to me -> scan -> display nearest damaged tree</h2>
 
   <label>Drone:
-    <select [(ngModel)]="selectedScanDroneId">
+    <select [(ngModel)]="selectedDroneId">
       <option *ngFor="let droneId of activeDronesIds" [value]="droneId">{{droneId}}</option>
     </select>
   </label>
 
   <br>
 
-  <button (click)="scanAroundDrone(selectedScanDroneId)">Scan around drone</button>
+  <button (click)="flyDroneToCurrLocAndScanForDamagedTree()">Fly to my location & scan for nearest damaged tree</button>
 
   <div *ngIf="nearestDamagedTreePos && distToNearestDamagedTree">
     <p>The nearest damaged tree is at X: {{nearestDamagedTreePos.x}} and Y: {{nearestDamagedTreePos.y}}.</p>
@@ -45,6 +32,19 @@
   </div>
 </div>
 
+<div>
+  <table *ngIf="damagedTreesData">
+    <tbody>
+      <th>Tree X</th>
+      <th>Tree Y</th>
+
+      <tr *ngFor="let tree of damagedTreesData?.damagedTrees">
+        <td>{{tree.x}}</td>
+        <td>{{tree.y}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 <div>
   <h2>Mark tree as examined</h2>
