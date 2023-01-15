@@ -63,7 +63,7 @@ export class ManageDronesComponent implements OnInit {
   }
 
   public markTreeAsExamined(x: number, y: number) {
-    this.droneService.markTreeAsExamined(x, y).subscribe();
+    this.droneService.markTreeAsExamined(x, y).subscribe(() => this.flyDroneToCurrLocAndScanForDamagedTree());
   }
 
   public getLocationOfNearestDamagedTree(): Position {
